@@ -27,7 +27,8 @@ jobs:
     - name: Build Debug APK
       run: |
         gradle assembleDebug --no-daemon > build.log 2>&1 || {
-          cat build.log | grep -E "e: |FAILURE|What went wrong:|Caused by:" -A 5 | head -n 40
+          echo "=== KOTLIN COMPILATION ERRORS ==="
+          grep -E "e: |error:" build.log | head -n 40
           exit 1
         }
 
