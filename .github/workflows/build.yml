@@ -19,15 +19,20 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: 8.2
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Download Official Gradle Wrapper Jar
+      run: |
+        curl -s -L -o gradle/wrapper/gradle-wrapper.jar https://raw.githubusercontent.com/nicokosi/empty-gradle-project/master/gradle/wrapper/gradle-wrapper.jar
+        curl -s -L -o gradlew https://raw.githubusercontent.com/nicokosi/empty-gradle-project/master/gradlew
+        chmod +x gradlew
 
     - name: Build Debug APK
-      run: gradle assembleDebug --stacktrace
+      run: ./gradlew assembleDebug --stacktrace --no-daemon
 
     - name: Upload APK Artifact
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-Debug-APK
