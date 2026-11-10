@@ -25,7 +25,12 @@ jobs:
         gradle-version: 8.2.1
 
     - name: Build Debug APK
-      run: gradle assembleDebug --no-daemon
+      run: |
+        gradle assembleDebug --no-daemon > build.log 2>&1 || {
+          echo "==================== COMPILATION ERRORS ===================="
+          grep -E "e: |error:|What went wrong:" -A 3 build.log | head -n 50
+          exit 1
+        }
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
