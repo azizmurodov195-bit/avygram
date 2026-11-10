@@ -1,4 +1,5 @@
 package uz.avy.avygram.ui.chats
+import uz.avygram.R
 
 data class ChatItem(
     val id: Long,

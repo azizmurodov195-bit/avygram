@@ -1,4 +1,5 @@
 package uz.avy.avygram.ui.reels
+import uz.avygram.R
 
 data class ReelItem(
     val id: Long,

@@ -1,4 +1,5 @@
 package uz.avy.avygram.ui.explore
+import uz.avygram.R
 
 data class ExploreChannelItem(
     val id: Long,
