@@ -1,5 +1,5 @@
 package uz.avy.avygram.ui.explore
-import uz.avygram.R
+import uz.avy.avygram.R
 
 import android.content.Intent
 import android.os.Bundle

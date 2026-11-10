@@ -1,5 +1,5 @@
 package uz.avy.avygram.ui.reels
-import uz.avygram.R
+import uz.avy.avygram.R
 
 import android.net.Uri
 import android.view.LayoutInflater

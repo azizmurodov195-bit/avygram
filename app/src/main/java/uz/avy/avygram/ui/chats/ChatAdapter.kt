@@ -1,5 +1,5 @@
 package uz.avy.avygram.ui.chats
-import uz.avygram.R
+import uz.avy.avygram.R
 
 import android.view.LayoutInflater
 import android.view.View

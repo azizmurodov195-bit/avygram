@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'uz.avygram'
+    namespace 'uz.avy.avygram'
     compileSdk 34
 
     defaultConfig {
-        applicationId "uz.avygram"
+        applicationId "uz.avy.avygram"
         minSdk 24
         targetSdk 34
         versionCode 1
@@ -47,7 +47,7 @@ dependencies {
     implementation 'androidx.viewpager2:viewpager2:1.0.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 
-    // Video va Reels uchun ExoPlayer / Media3
+    // Video va Reels uchun Media3
     implementation 'androidx.media3:media3-exoplayer:1.2.1'
     implementation 'androidx.media3:media3-ui:1.2.1'
     implementation 'androidx.media3:media3-common:1.2.1'
