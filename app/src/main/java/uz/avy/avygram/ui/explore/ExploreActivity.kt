@@ -11,12 +11,8 @@ class ExploreActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_explore)
 
-        val recyclerView: RecyclerView = findViewById(R.id.recyclerExplore)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        val dummyChannels = listOf(
-            ExploreChannelItem("1", "Neon News", "Yangiliklar", "12.5k"),
-            ExploreChannelItem("2", "Cyber World", "Texnologiya", "45.1k")
-        )
-        recyclerView.adapter = ExploreChannelAdapter(dummyChannels)
+        val recycler = findViewById<RecyclerView>(R.id.recyclerExplore)
+        recycler?.layoutManager = LinearLayoutManager(this)
+        recycler?.adapter = ExploreChannelAdapter(emptyList())
     }
 }

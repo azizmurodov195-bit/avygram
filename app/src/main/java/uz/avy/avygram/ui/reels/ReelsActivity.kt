@@ -10,11 +10,7 @@ class ReelsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reels)
 
-        val viewPager: ViewPager2 = findViewById(R.id.viewPagerReels)
-        val dummyReels = listOf(
-            ReelItem("1", "https://example.com/video1.mp4", "@avygram", "Avygram Reels Beta"),
-            ReelItem("2", "https://example.com/video2.mp4", "@channel", "Neon style video test")
-        )
-        viewPager.adapter = ReelAdapter(dummyReels)
+        val viewPager = findViewById<ViewPager2>(R.id.viewPagerReels)
+        viewPager?.adapter = ReelAdapter(emptyList())
     }
 }

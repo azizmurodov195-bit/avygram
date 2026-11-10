@@ -8,11 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import uz.avy.avygram.R
 
 class ChatAdapter(private val items: List<ChatItem>) : RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
-
-    class ChatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val titleText: TextView = itemView.findViewById(R.id.chatTitle)
-        val lastMessageText: TextView = itemView.findViewById(R.id.chatLastMessage)
-        val timeText: TextView = itemView.findViewById(R.id.chatTime)
+    class ChatViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val title: TextView? = view.findViewById(R.id.chatTitle)
+        val msg: TextView? = view.findViewById(R.id.chatLastMessage)
+        val time: TextView? = view.findViewById(R.id.chatTime)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
@@ -22,9 +21,9 @@ class ChatAdapter(private val items: List<ChatItem>) : RecyclerView.Adapter<Chat
 
     override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
         val item = items[position]
-        holder.titleText.text = item.title
-        holder.lastMessageText.text = item.lastMessage
-        holder.timeText.text = item.time
+        holder.title?.text = item.title
+        holder.msg?.text = item.lastMessage
+        holder.time?.text = item.time
     }
 
     override fun getItemCount(): Int = items.size

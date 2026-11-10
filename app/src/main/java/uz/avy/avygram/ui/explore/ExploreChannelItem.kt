@@ -1,9 +1,8 @@
 package uz.avy.avygram.ui.explore
-import uz.avy.avygram.R
 
 data class ExploreChannelItem(
-    val id: Long,
-    val title: String,
-    val subscribers: String,
-    val isSubscribed: Boolean = false
+    val id: String,
+    val name: String,
+    val category: String,
+    val subscribers: String
 )
