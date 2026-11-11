@@ -14,6 +14,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: recursive
+        fetch-depth: 1
 
     - name: Set up JDK 11
       uses: actions/setup-java@v4
@@ -21,41 +22,26 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Install Native Build Tools
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ninja-build cmake yasm nasm golang
-
-    - name: Build Native Libraries (BoringSSL & FFmpeg)
-      run: |
-        export ANDROID_NDK_HOME="$ANDROID_HOME/ndk/21.4.7075529"
-        if [ ! -d "$ANDROID_NDK_HOME" ]; then
-          export ANDROID_NDK_HOME=$(find $ANDROID_HOME/ndk -maxdepth 1 -type d | tail -n 1)
-        fi
-        export NDK="$ANDROID_NDK_HOME"
-        
-        cd TMessagesProj/jni
-        if [ -f "build_boringssl.sh" ]; then
-          chmod +x build_boringssl.sh
-          ./build_boringssl.sh arm64-v8a
-        fi
-        if [ -f "build_ffmpeg_clang.sh" ]; then
-          chmod +x build_ffmpeg_clang.sh
-          ./build_ffmpeg_clang.sh arm64-v8a
-        fi
-        cd ../..
-
-    - name: Build AVYGRAM Arm64 APK
+    - name: Setup Environment
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
+
+    - name: Build APK for Arm64
+      run: |
         chmod +x gradlew
-        ./gradlew assembleArm64Debug -x test -x lint --no-daemon
+        ./gradlew assembleArm64Debug -x test -x lint --no-daemon || ./gradlew assembleDebug -PabiList=arm64-v8a -x test -x lint --no-daemon
+
+    - name: Collect APK
+      run: |
+        mkdir -p ready_apk
+        find TMessagesProj/build/outputs/apk/ -name "*.apk" -exec cp {} ready_apk/ \; || find . -name "*.apk" -exec cp {} ready_apk/ \;
+        ls -la ready_apk/
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-APK
-        path: "**/build/outputs/apk/**/*.apk"
+        path: ready_apk/*.apk
         if-no-files-found: error
