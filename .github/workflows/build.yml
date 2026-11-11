@@ -10,8 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
+    - name: Checkout Repository with Submodules
       uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 1
 
     - name: Set up JDK 11
       uses: actions/setup-java@v4
@@ -28,14 +31,10 @@ jobs:
     - name: Build APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug --no-daemon --console=plain > build.log 2>&1 || true
-        echo "=== XATOLIKNING ASOSIY SABABI ==="
-        grep -E -C 3 "error:|FAILURE:|FAILED|What went wrong" build.log | head -n 40
-        find . -name "*.apk"
+        ./gradlew assembleAfatDebug --no-daemon
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-APK
         path: "**/build/outputs/apk/**/*.apk"
-        if-no-files-found: ignore
