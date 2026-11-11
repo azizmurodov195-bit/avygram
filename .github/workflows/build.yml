@@ -19,22 +19,24 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Install exact NDK
+    - name: Setup Preinstalled NDK & Properties
       run: |
-        export SKIP_JDK_VERSION_CHECK=true
-        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;21.4.7075529"
-
-    - name: Configure Environment
-      run: |
+        # Mavjud NDK ni topish yoki bog'lash
+        NDK_PATH=$(find $ANDROID_HOME/ndk -maxdepth 1 -name "21.*" | head -n 1)
+        if [ -z "$NDK_PATH" ]; then
+          NDK_PATH=$(find $ANDROID_HOME/ndk -maxdepth 1 -type d | tail -n 1)
+        fi
+        echo "Topilgan NDK: $NDK_PATH"
+        
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
         echo "sdk.dir=$ANDROID_HOME" > local.properties
-        echo "ndk.dir=$ANDROID_HOME/ndk/21.4.7075529" >> local.properties
+        echo "ndk.dir=$NDK_PATH" >> local.properties
 
     - name: Build Debug APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug -x lint -x test --no-daemon || ./gradlew assembleDebug -x lint -x test --no-daemon
+        ./gradlew assembleAfatDebug -x lint -x test --no-daemon
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
