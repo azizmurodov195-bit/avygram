@@ -1,115 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main">
+    android:background="#000000">
 
-    <!-- Video ko'rsatish ekrani -->
     <androidx.media3.ui.PlayerView
         android:id="@+id/playerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:use_controller="false"
-        app:resize_mode="zoom"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-    <!-- Chap pastki qism: Kanal ma'lumotlari -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="80dp"
-        android:layout_marginBottom="24dp"
+        android:layout_gravity="bottom"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:padding="16dp">
 
         <TextView
-            android:id="@+id/tvChannelTitle"
+            android:id="@+id/reelAuthor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@tabiat_uz"
-            android:textColor="@color/text_primary"
+            android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvReelDescription"
+            android:id="@+id/reelDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:text="Olib ket meni tog'larga 🏔️ #sayohat #tabiat #toglar"
-            android:textColor="@color/text_secondary"
+            android:layout_marginTop="4dp"
+            android:textColor="#DDDDDD"
             android:textSize="14sp" />
     </LinearLayout>
-
-    <!-- O'ng tarafdagi vertikal harakatlar ustuni -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <!-- Like tugmasi -->
-        <ImageView
-            android:id="@+id/btnLike"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@android:drawable/btn_star_big_on" />
-
-        <TextView
-            android:id="@+id/tvLikesCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="24.7K"
-            android:textColor="@color/text_primary"
-            android:textSize="12sp" />
-
-        <!-- Izoh tugmasi -->
-        <ImageView
-            android:id="@+id/btnComment"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="16dp"
-            android:src="@android:drawable/stat_notify_chat" />
-
-        <TextView
-            android:id="@+id/tvCommentsCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="1,268"
-            android:textColor="@color/text_primary"
-            android:textSize="12sp" />
-
-        <!-- Ulashish tugmasi -->
-        <ImageView
-            android:id="@+id/btnShare"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="16dp"
-            android:src="@android:drawable/ic_menu_share" />
-
-        <TextView
-            android:id="@+id/tvSharesCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="3,412"
-            android:textColor="@color/text_primary"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
