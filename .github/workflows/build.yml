@@ -28,7 +28,6 @@ jobs:
       run: gradle assembleDebug --no-daemon
 
     - name: Upload APK Artifact
-      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-Debug-APK
