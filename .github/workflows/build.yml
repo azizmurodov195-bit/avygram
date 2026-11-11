@@ -28,26 +28,24 @@ jobs:
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
 
-    - name: Fetch Prebuilt FFmpeg Libraries
-      run: |
-        mkdir -p TMessagesProj/jni/ffmpeg/build
-        cd TMessagesProj/jni/ffmpeg
-        # Telegram-FOSS ning rasmiy prebuilt kutubxonalarini yuklab olish
-        curl -sSL "https://raw.githubusercontent.com/Telegram-FOSS-Team/Telegram-FOSS/master/TMessagesProj/jni/ffmpeg/download.sh" -o download_official.sh || true
-        if [ -s download_official.sh ]; then
-          bash download_official.sh || true
-        fi
-        # Agar skript bo'lmasa yoki ishlamasa, arxitekturani to'ldirish
-        cd ../../../
-
-    - name: Build APK (Arm64 & Universal)
+    - name: Build FFmpeg & Arm64 APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug -x test -x lint --no-daemon || ./gradlew assembleDebug -x test -x lint --no-daemon
+        # Agar ffmpeg skripti bo'lsa arm64 uchun ishga tushirish
+        if [ -f "./TMessagesProj/jni/build_ffmpeg_clang.sh" ]; then
+          cd TMessagesProj/jni && bash build_ffmpeg_clang.sh arm64-v8a && cd ../..
+        fi
+        ./gradlew assembleArm64Debug -x test -x lint --no-daemon || ./gradlew assembleDebug -PabiList=arm64-v8a -x test -x lint --no-daemon
+
+    - name: Collect APK
+      run: |
+        mkdir -p ready_apk
+        find . -name "*.apk" -exec cp {} ready_apk/ \;
+        ls -la ready_apk/
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-APK
-        path: "**/build/outputs/apk/**/*.apk"
+        path: ready_apk/*.apk
         if-no-files-found: error
