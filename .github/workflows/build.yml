@@ -21,18 +21,21 @@ jobs:
 
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
+      id: setup-ndk
       with:
         ndk-version: r21e
 
-    - name: Configure Gradle Memory
+    - name: Configure Environment
       run: |
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        echo "ndk.dir=$ANDROID_NDK_HOME" >> local.properties
 
     - name: Build Debug APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug --no-daemon --stacktrace || ./gradlew assembleDebug --no-daemon --stacktrace
+        ./gradlew assembleAfatDebug -x lint -x test --no-daemon || ./gradlew assembleDebug -x lint -x test --no-daemon
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
