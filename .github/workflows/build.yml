@@ -25,7 +25,13 @@ jobs:
         gradle-version: 8.2.1
 
     - name: Build Debug APK
-      run: gradle assembleDebug --no-daemon
+      run: |
+        ./gradlew assembleDebug --no-daemon 2>&1 | tee build_full.log || true
+        if [ ! -f app/build/outputs/apk/debug/*.apk ]; then
+          echo "==================== MANA ASIL XATO ===================="
+          grep -E "e: |error:|FAILURE:" -A 3 build_full.log || tail -n 60 build_full.log
+          exit 1
+        fi
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
