@@ -57,7 +57,7 @@ jobs:
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
         chmod +x gradlew
-        ./gradlew assembleAfatDebug -x test -x lint --no-daemon
+        ./gradlew assembleAfatDebug -Pandroid.injected.build.abi=arm64-v8a -x test -x lint --no-daemon
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
