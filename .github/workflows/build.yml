@@ -25,14 +25,10 @@ jobs:
         gradle-version: 8.2.1
 
     - name: Build Debug APK
-      run: |
-        gradle assembleDebug --no-daemon > build.log 2>&1 || {
-          echo "==================== COMPILATION ERRORS ===================="
-          grep -E "e: |error:|What went wrong:" -A 3 build.log | head -n 50
-          exit 1
-        }
+      run: gradle assembleDebug --stacktrace
 
     - name: Upload APK Artifact
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-Debug-APK
