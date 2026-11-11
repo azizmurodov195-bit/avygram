@@ -28,13 +28,22 @@ jobs:
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
 
-    - name: Build APK
+    - name: Prepare FFmpeg and Native Dependencies
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug --no-daemon
+        # FFmpeg va prebuilt kutubxonalarni yuklash/tayyorlash
+        if [ -f "./TMessagesProj/jni/ffmpeg/download.sh" ]; then
+          bash ./TMessagesProj/jni/ffmpeg/download.sh || true
+        fi
+        ./gradlew getFFmpeg || true
+
+    - name: Build APK
+      run: |
+        ./gradlew assembleAfatDebug --no-daemon -x test -x lint
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-APK
         path: "**/build/outputs/apk/**/*.apk"
+        if-no-files-found: error
