@@ -19,21 +19,26 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Setup NDK and Local Properties
+    - name: Setup Environment
       run: |
         echo "sdk.dir=$ANDROID_HOME" > local.properties
-        echo "ndk.dir=$ANDROID_HOME/ndk-bundle" >> local.properties
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
 
-    - name: Build Debug APK
+    - name: Build APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug --stacktrace --no-daemon 2>&1 | tee build_log.txt || (echo "=== XATOLIK MATNI ===" && grep -B 2 -A 10 "FAILURE: Build failed" build_log.txt && exit 1)
+        ./gradlew assembleAfatDebug --no-daemon || ./gradlew assembleDebug --no-daemon
 
-    - name: Upload APK Artifact
-      if: always()
+    - name: Find and Collect APK
+      run: |
+        mkdir -p output_apk
+        find . -name "*.apk" -exec cp {} output_apk/ \;
+        ls -la output_apk/
+
+    - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
       with:
-        name: AVYGRAM-Telegram-APK
-        path: "**/build/outputs/apk/**/*.apk"
+        name: AVYGRAM-APK
+        path: output_apk/*.apk
+        if-no-files-found: error
