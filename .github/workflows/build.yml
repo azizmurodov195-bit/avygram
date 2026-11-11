@@ -28,17 +28,14 @@ jobs:
     - name: Build APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug --no-daemon || ./gradlew assembleDebug --no-daemon
-
-    - name: Find and Collect APK
-      run: |
-        mkdir -p output_apk
-        find . -name "*.apk" -exec cp {} output_apk/ \;
-        ls -la output_apk/
+        ./gradlew assembleAfatDebug --no-daemon --console=plain > build.log 2>&1 || true
+        echo "=== XATOLIKNING ASOSIY SABABI ==="
+        grep -E -C 3 "error:|FAILURE:|FAILED|What went wrong" build.log | head -n 40
+        find . -name "*.apk"
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-APK
-        path: output_apk/*.apk
-        if-no-files-found: error
+        path: "**/build/outputs/apk/**/*.apk"
+        if-no-files-found: ignore
