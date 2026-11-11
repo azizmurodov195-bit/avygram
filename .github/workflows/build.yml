@@ -19,16 +19,16 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Setup Android NDK
-      uses: nttld/setup-ndk@v1
-      with:
-        ndk-version: '21.4.7075529'
-        link-to-sdk: true
+    - name: Install exact NDK
+      run: |
+        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;21.4.7075529"
 
     - name: Configure Environment
       run: |
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        echo "ndk.dir=$ANDROID_HOME/ndk/21.4.7075529" >> local.properties
 
     - name: Build Debug APK
       run: |
