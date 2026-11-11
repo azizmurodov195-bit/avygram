@@ -19,26 +19,20 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
 
-    - name: Setup Preinstalled NDK & Properties
+    - name: Setup NDK and Local Properties
       run: |
-        # Mavjud NDK ni topish yoki bog'lash
-        NDK_PATH=$(find $ANDROID_HOME/ndk -maxdepth 1 -name "21.*" | head -n 1)
-        if [ -z "$NDK_PATH" ]; then
-          NDK_PATH=$(find $ANDROID_HOME/ndk -maxdepth 1 -type d | tail -n 1)
-        fi
-        echo "Topilgan NDK: $NDK_PATH"
-        
+        echo "sdk.dir=$ANDROID_HOME" > local.properties
+        echo "ndk.dir=$ANDROID_HOME/ndk-bundle" >> local.properties
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
-        echo "sdk.dir=$ANDROID_HOME" > local.properties
-        echo "ndk.dir=$NDK_PATH" >> local.properties
 
     - name: Build Debug APK
       run: |
         chmod +x gradlew
-        ./gradlew assembleAfatDebug -x lint -x test --no-daemon
+        ./gradlew assembleAfatDebug --stacktrace --no-daemon 2>&1 | tee build_log.txt || (echo "=== XATOLIK MATNI ===" && grep -B 2 -A 10 "FAILURE: Build failed" build_log.txt && exit 1)
 
     - name: Upload APK Artifact
+      if: always()
       uses: actions/upload-artifact@v4
       with:
         name: AVYGRAM-Telegram-APK
