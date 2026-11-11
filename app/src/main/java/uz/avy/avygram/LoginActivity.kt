@@ -8,7 +8,8 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import org.drinkless.tdlib.TdApi
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -26,70 +27,57 @@ class LoginActivity : AppCompatActivity() {
         btnSubmit = findViewById(R.id.btnSubmit)
         progressBar = findViewById(R.id.progressBar)
 
-        TelegramClientManager.init(applicationContext) { state ->
-            runOnUiThread {
-                handleAuthState(state)
-            }
-        }
+        TelegramClientManager.init(this)
 
         btnSubmit.setOnClickListener {
-            val codeVisibility = etCode.visibility
-            if (codeVisibility != View.VISIBLE) {
-                val phone = etPhone.text.toString().trim()
+            val phone = etPhone.text.toString().trim()
+            val code = etCode.text.toString().trim()
+
+            if (etCode.visibility != View.VISIBLE) {
                 if (phone.isEmpty()) {
-                    Toast.makeText(this, "Raqamni kiriting", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Iltimos, telefon raqamingizni kiriting", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
+
                 progressBar.visibility = View.VISIBLE
                 btnSubmit.isEnabled = false
 
-                TelegramClientManager.sendPhoneNumber(phone) { error ->
-                    runOnUiThread {
-                        progressBar.visibility = View.GONE
-                        btnSubmit.isEnabled = true
-                        Toast.makeText(this, "Xato: $error", Toast.LENGTH_LONG).show()
+                lifecycleScope.launch {
+                    val result = TelegramClientManager.sendPhoneNumber(phone)
+                    progressBar.visibility = View.GONE
+                    btnSubmit.isEnabled = true
+
+                    if (result.isSuccess) {
+                        etCode.visibility = View.VISIBLE
+                        btnSubmit.text = "Kirish"
+                        Toast.makeText(this@LoginActivity, "Tasdiqlash kodi yuborildi", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this@LoginActivity, "Xatolik: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             } else {
-                val code = etCode.text.toString().trim()
                 if (code.isEmpty()) {
                     Toast.makeText(this, "Kodni kiriting", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
+
                 progressBar.visibility = View.VISIBLE
                 btnSubmit.isEnabled = false
 
-                TelegramClientManager.checkCode(code) { error ->
-                    runOnUiThread {
-                        progressBar.visibility = View.GONE
-                        btnSubmit.isEnabled = true
-                        Toast.makeText(this, "Kod noto'g'ri: $error", Toast.LENGTH_LONG).show()
+                lifecycleScope.launch {
+                    val result = TelegramClientManager.checkCode(code)
+                    progressBar.visibility = View.GONE
+                    btnSubmit.isEnabled = true
+
+                    if (result.isSuccess) {
+                        Toast.makeText(this@LoginActivity, "Muvaffaqiyatli ulandi!", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this@LoginActivity, "Kod xato: ${result.exceptionOrNull()?.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }
-        }
-    }
-
-    private fun handleAuthState(state: TdApi.AuthorizationState) {
-        when (state) {
-            is TdApi.AuthorizationStateWaitCode -> {
-                progressBar.visibility = View.GONE
-                btnSubmit.isEnabled = true
-                etCode.visibility = View.VISIBLE
-                btnSubmit.text = "Kodni tasdiqlash"
-                Toast.makeText(this, "Kod Telegram akkauntingizga yuborildi!", Toast.LENGTH_SHORT).show()
-            }
-            is TdApi.AuthorizationStateReady -> {
-                progressBar.visibility = View.GONE
-                Toast.makeText(this, "Muvaffaqiyatli kirdingiz!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
-            }
-            is TdApi.AuthorizationStateWaitPhoneNumber -> {
-                progressBar.visibility = View.GONE
-                btnSubmit.isEnabled = true
-            }
-            else -> {}
         }
     }
 }
