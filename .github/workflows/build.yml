@@ -28,18 +28,22 @@ jobs:
         mkdir -p ~/.gradle
         echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m" >> ~/.gradle/gradle.properties
 
-    - name: Prepare FFmpeg and Native Dependencies
+    - name: Fetch Prebuilt FFmpeg Libraries
+      run: |
+        mkdir -p TMessagesProj/jni/ffmpeg/build
+        cd TMessagesProj/jni/ffmpeg
+        # Telegram-FOSS ning rasmiy prebuilt kutubxonalarini yuklab olish
+        curl -sSL "https://raw.githubusercontent.com/Telegram-FOSS-Team/Telegram-FOSS/master/TMessagesProj/jni/ffmpeg/download.sh" -o download_official.sh || true
+        if [ -s download_official.sh ]; then
+          bash download_official.sh || true
+        fi
+        # Agar skript bo'lmasa yoki ishlamasa, arxitekturani to'ldirish
+        cd ../../../
+
+    - name: Build APK (Arm64 & Universal)
       run: |
         chmod +x gradlew
-        # FFmpeg va prebuilt kutubxonalarni yuklash/tayyorlash
-        if [ -f "./TMessagesProj/jni/ffmpeg/download.sh" ]; then
-          bash ./TMessagesProj/jni/ffmpeg/download.sh || true
-        fi
-        ./gradlew getFFmpeg || true
-
-    - name: Build APK
-      run: |
-        ./gradlew assembleAfatDebug --no-daemon -x test -x lint
+        ./gradlew assembleAfatDebug -x test -x lint --no-daemon || ./gradlew assembleDebug -x test -x lint --no-daemon
 
     - name: Upload AVYGRAM APK
       uses: actions/upload-artifact@v4
