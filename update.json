@@ -1,7 +1,6 @@
 {
-  "versionCode": 49289,
-  "versionName": "1.1.0",
-  "changelog": "• Yangi Neon A kirish ekrani\n• O'chirilgan va tahrirlangan xabarlarni saqlash\n• Hikoyalar panelini bir bosishda yashirish\n• Tozalangan Avygram Sozlamalari menyusi",
-  "apkUrl": "https://github.com/azizmurodov195-bit/avygram/releases/download/v1.1.0/Avygram-v1.1.0.apk"
+  "versionCode": 49299,
+  "versionName": "1.1.1",
+  "changelog": "• Tahrirlangan xabarlarning oldingi nusxasini saqlash (✏️ Oldingi)\n• Asosiy oynada Sharpa tugmasi tezkor yangilanishi\n• Stiker, GIF va ovozli xabar yuborishni tasdiqlash\n• Jild tablarini yashirish va xabar vaqtida sekundlar (12:01:45)\n• Ovozli xabarlar uchun Real DSP Ovoz o'zgartirgich",
+  "apkUrl": "https://github.com/azizmurodov195-bit/avygram/releases/download/v1.1.1/Avygram-v1.1.1.apk"
 }
-￼Enter
