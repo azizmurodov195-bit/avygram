@@ -1,6 +1,6 @@
 {
-  "versionCode": 49299,
-  "versionName": "1.1.1",
-  "changelog": "• Tahrirlangan xabarlarning oldingi nusxasini saqlash (✏️ Oldingi)\n• Asosiy oynada Sharpa tugmasi tezkor yangilanishi\n• Stiker, GIF va ovozli xabar yuborishni tasdiqlash\n• Jild tablarini yashirish va xabar vaqtida sekundlar (12:01:45)\n• Ovozli xabarlar uchun Real DSP Ovoz o'zgartirgich",
-  "apkUrl": "https://github.com/azizmurodov195-bit/avygram/releases/download/v1.1.1/Avygram-v1.1.1.apk"
+  "versionCode": 49300,
+  "versionName": "1.1.2",
+  "changelog": "• Yashirin chatlar (Hidden Chats) funksiyasi qo'shildi — chatlarni PIN-kod bilan yashirish va suzuvchi tugmani bosib turib yoki qidiruv orqali ochish imkoniyati",
+  "apkUrl": "https://github.com/azizmurodov195-bit/avygram/releases/download/v1.1.2/Avygram-v1.1.2.apk"
 }
