@@ -1,6 +1,6 @@
 {
-  "versionCode": 49300,
-  "versionName": "1.1.2",
-  "changelog": "• Yashirin chatlar (Hidden Chats) funksiyasi qo'shildi — chatlarni PIN-kod bilan yashirish va suzuvchi tugmani bosib turib yoki qidiruv orqali ochish imkoniyati",
-  "apkUrl": "https://github.com/azizmurodov195-bit/avygram/releases/download/v1.1.2/Avygram-v1.1.2.apk"
+  "versionCode": 49301,
+  "versionName": "1.1.3",
+  "changelog": "Chatlar ro'yxati qotishini bartaraf etish uchun chatni yashirish funksiyasi olib tashlandi. Boshqa barcha funksiyalar saqlab qolindi.",
+  "apkUrl": "https://github.com/azizmurodov195-bit/avygram/releases/download/v1.1.3/Avygram-v1.1.3.apk"
 }
