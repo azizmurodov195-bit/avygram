@@ -926,3 +926,12 @@ void vInitDrawhelperFunctions()
 }
 
 V_CONSTRUCTOR_FUNCTION(vInitDrawhelperFunctions)
+void memfill32(uint32_t *dest, uint32_t value, int count) {
+    for (int i = 0; i < count; i++) dest[i] = value;
+}
+void comp_func_solid_SourceOver_neon(uint32_t *dest, int length, uint32_t color, uint32_t const_alpha) {
+    int ialpha, i;
+    if (const_alpha != 255) color = BYTE_MUL(color, const_alpha);
+    ialpha = 255 - vAlpha(color);
+    for (i = 0; i < length; ++i) dest[i] = color + BYTE_MUL(dest[i], ialpha);
+}

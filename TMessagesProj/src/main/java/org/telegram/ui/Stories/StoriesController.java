@@ -267,6 +267,7 @@ public class StoriesController {
     }
 
     public boolean hasStories() {
+        if (org.telegram.ui.AvygramSettingsActivity.getPref("hide_stories", false)) return false;
         return (dialogListStories != null && dialogListStories.size() > 0) || hasSelfStories();
     }
 
@@ -1253,6 +1254,7 @@ public class StoriesController {
     }
 
     public boolean markStoryAsRead(TL_stories.PeerStories userStories, TL_stories.StoryItem storyItem, boolean profile) {
+        if (org.telegram.ui.AvygramHomeHelper.isStoryStealthEnabled(null)) return false;
         if (storyItem == null || userStories == null) {
             return false;
         }

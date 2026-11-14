@@ -30,17 +30,17 @@ public class NotificationsService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String CHANNEL_ID = "push_service_channel";
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,"Push Notifications Service",NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID,"Push Notifications Service",NotificationManager.IMPORTANCE_MIN);
             notificationManager.createNotificationChannel(channel);
-            Intent explainIntent = new Intent("android.intent.action.VIEW");
-            explainIntent.setData(Uri.parse("https://github.com/Telegram-FOSS-Team/Telegram-FOSS/blob/master/Notifications.md"));
+            Intent explainIntent = new Intent(this, org.telegram.ui.LaunchActivity.class);
+            explainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent explainPendingIntent = PendingIntent.getActivity(this, 0, explainIntent, PendingIntent.FLAG_MUTABLE);
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                     .setContentIntent(explainPendingIntent)
                     .setShowWhen(false)
                     .setOngoing(true)
                     .setSmallIcon(R.drawable.notification)
-                    .setContentText("Push service: tap to learn more").build();
+                    .setContentText("Avygram xabarlar xizmati faol").build();
             startForeground(9999,notification);
         }
     }

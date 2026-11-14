@@ -3228,6 +3228,7 @@ public class DialogCell extends BaseCell implements StoriesListPlaceProvider.Ava
     @SuppressLint("DrawAllocation")
     @Override
     protected void onDraw(Canvas canvas) {
+        org.telegram.ui.AvygramHomeHelper.drawNeonCard(canvas, getMeasuredWidth(), getMeasuredHeight(), drawPin);
         if (currentDialogId == 0 && customDialog == null) {
             return;
         }

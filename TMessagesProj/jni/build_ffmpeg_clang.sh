@@ -115,12 +115,12 @@ function setCurrentPlatform {
 			COMPILATION_PROC_COUNT=`sysctl -n hw.physicalcpu`
 			;;
 		Linux*)
-			BUILD_PLATFORM=linux-x86_64
+			BUILD_PLATFORM=linux-aarch64
 			COMPILATION_PROC_COUNT=$(nproc)
 			;;
 		*)
-			echo -e "\033[33mWarning! Unknown platform ${CURRENT_PLATFORM}! falling back to linux-x86_64\033[0m"
-			BUILD_PLATFORM=linux-x86_64
+			echo -e "\033[33mWarning! Unknown platform ${CURRENT_PLATFORM}! falling back to linux-aarch64\033[0m"
+			BUILD_PLATFORM=linux-aarch64
 			COMPILATION_PROC_COUNT=1
 			;;
 	esac
@@ -153,7 +153,7 @@ checkPreRequisites
 cd ffmpeg
 
 ## common
-LLVM_PREFIX="${NDK}/toolchains/llvm/prebuilt/linux-x86_64"
+LLVM_PREFIX="${NDK}/toolchains/llvm/prebuilt/linux-aarch64"
 LLVM_BIN="${LLVM_PREFIX}/bin"
 VERSION="4.9"
 

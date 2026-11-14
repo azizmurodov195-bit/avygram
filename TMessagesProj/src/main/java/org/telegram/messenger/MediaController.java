@@ -863,6 +863,32 @@ public class MediaController implements AudioManager.OnAudioFocusChangeListener,
                 }
                 buffer.rewind();
                 int len = audioRecorder.read(buffer, buffer.capacity());
+                if (len > 2) {
+                    float pitch = org.telegram.ui.AvygramSettingsActivity.getVoicePitchMultiplier();
+                    String eff = org.telegram.ui.AvygramSettingsActivity.getVoiceEffectName("voice_msg_effect");
+                    if (pitch != 1.0f || !"O'chiq".equals(eff)) {
+                        int nSamples = len / 2;
+                        short[] src = new short[nSamples];
+                        for (int k = 0; k < nSamples; k++) src[k] = buffer.getShort(k * 2);
+                        for (int k = 0; k < nSamples; k++) {
+                            int idx = (int) (k * pitch);
+                            if (idx >= nSamples) idx = idx % nSamples;
+                            int val = src[idx];
+                            if ("Robot".equals(eff) || "O'zga sayyoralik".equals(eff) || "Modulyatsiya".equals(eff)) {
+                                val = (int) (val * Math.sin(k * 0.35));
+                            } else if ("Aks-sado (70%)".equals(eff) || "G'or".equals(eff)) {
+                                int echoIdx = Math.max(0, k - 400);
+                                val = (int) (val * 0.75 + src[echoIdx] * 0.45);
+                            } else if ("Xirillash".equals(eff) || "Shovqin (70%)".equals(eff)) {
+                                val = (val / 1200) * 1200;
+                            }
+                            if (val > 32767) val = 32767;
+                            if (val < -32768) val = -32768;
+                            buffer.putShort(k * 2, (short) val);
+                        }
+                        buffer.position(0);
+                    }
+                }
                 if (len > 0) {
                     buffer.limit(len);
                     double sum = 0;

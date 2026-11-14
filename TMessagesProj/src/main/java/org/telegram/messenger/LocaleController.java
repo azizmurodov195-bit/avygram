@@ -72,7 +72,7 @@ public class LocaleController {
                         lang = "en";
                     }
                     lang = lang.toLowerCase();
-                    formatterDay = createFormatter(lang.toLowerCase().equals("ar") || lang.toLowerCase().equals("ko") ? locale : Locale.US, is24HourFormat ? getStringInternal("formatterDay24H", R.string.formatterDay24H) : getStringInternal("formatterDay12H", R.string.formatterDay12H), is24HourFormat ? "HH:mm" : "h:mm a");
+                    formatterDay = createFormatter(lang.toLowerCase().equals("ar") || lang.toLowerCase().equals("ko") ? locale : Locale.US, (org.telegram.ui.AvygramSettingsActivity.getPref("show_seconds", false) ? (is24HourFormat ? "HH:mm:ss" : "h:mm:ss a") : (is24HourFormat ? getStringInternal("formatterDay24H", R.string.formatterDay24H) : getStringInternal("formatterDay12H", R.string.formatterDay12H))), is24HourFormat ? "HH:mm" : "h:mm a");
                 }
             }
         }

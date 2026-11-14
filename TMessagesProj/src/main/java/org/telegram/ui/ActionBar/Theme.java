@@ -9485,6 +9485,7 @@ public class Theme {
     }
 
     public static int getColor(int key, boolean[] isDefault, boolean ignoreAnimation) {
+        Integer avyColor = org.telegram.ui.AvygramHomeHelper.getNeonOverrideColor(key); if (avyColor != null) return avyColor;
         if (!ignoreAnimation && animatingColors != null) {
             int index = animatingColors.indexOfKey(key);
             if (index >= 0) {

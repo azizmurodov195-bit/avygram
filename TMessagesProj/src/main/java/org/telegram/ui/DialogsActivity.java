@@ -965,7 +965,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     tabsYOffset -= rightSlidingProgress * (getMaxScrollYOffset() + scrollYOffset);
                     storiesYOffset = tabsYOffset;
                 }
-                if (dialogStoriesCellVisible) {
+                if (dialogStoriesCellVisible && !AvygramSettingsActivity.getPref("hide_stories", false)) {
                     storiesAlpha = 1f - Utilities.clamp(rightSlidingProgress / 0.5f, 1f, 0f);
                 }
                 if (filterTabsView != null && filterTabsView.getVisibility() == View.VISIBLE) {
@@ -2976,6 +2976,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                     ((SelectAnimatedEmojiDialog) selectAnimatedEmojiDialog.getContentView()).setScrimDrawable(textView != null && textView.getRightDrawable() == statusDrawable ? statusDrawable : null, textView);
                 }
                 if (dialogStoriesCell != null) {
+            // hide_stories_applied
+            if (AvygramSettingsActivity.getPref("hide_stories", false)) { dialogStoriesCell.setVisibility(View.GONE); return; }
                     dialogStoriesCell.setTitleOverlayText(title, titleId);
                 }
             }
@@ -3821,6 +3823,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             viewPage.addView(viewPage.progressView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.CENTER));
 
             viewPage.listView = new DialogsRecyclerView(context, viewPage);
+            AvygramStudioSettingsActivity.applyChatListWallpaper(viewPage, viewPage.listView);
             viewPage.scroller = new RecyclerListViewScroller(viewPage.listView);
             viewPage.listView.setAllowStopHeaveOperations(true);
             viewPage.listView.setAccessibilityEnabled(false);
@@ -4906,6 +4909,8 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
 
         if (filterTabsView != null) {
+            // hide_tabs_applied
+            if (AvygramSettingsActivity.getPref("hide_tabs", false)) { filterTabsView.setVisibility(View.GONE); }
             contentView.addView(filterTabsView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, 44));
         }
 
@@ -5217,7 +5222,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
             actionBar.openSearchField(initialSearchString, false);
             initialSearchString = null;
             if (filterTabsView != null) {
-                filterTabsView.setTranslationY(-dp(44));
+                filterTabsView.setTranslationY(0);
             }
         } else {
             showSearch(false, false, false);
@@ -5413,6 +5418,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         contentView.addView(rightSlidingDialogContainer, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         contentView.addView(dialogStoriesCell, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, DialogStoriesCell.HEIGHT_IN_DP));
         updateStoriesVisibility(false);
+        AvygramHomeHelper.attachHomeChrome(this, fragmentView);
         return fragmentView;
     }
 
@@ -6632,7 +6638,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 if (filterTabsView.getVisibility() != View.VISIBLE) {
                     animatedUpdateItems = false;
                 }
-                canShowFilterTabsView = true;
+                canShowFilterTabsView = !AvygramSettingsActivity.getPref("hide_tabs", false);
                 boolean updateCurrentTab = filterTabsView.isEmpty();
                 updateFilterTabsVisibility(animated);
                 int id = filterTabsView.getCurrentTabId();
@@ -6795,7 +6801,16 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     @Override
     public void onResume() {
+        if (viewPages != null) {
+            for (ViewPage vp : viewPages) {
+                if (vp != null) AvygramStudioSettingsActivity.applyChatListWallpaper(vp, vp.listView);
+            }
+        }
         super.onResume();
+        AvygramHomeHelper.refreshGhostBtn(fragmentView);
+        if (filterTabsView != null) { boolean ht = AvygramSettingsActivity.getPref("hide_tabs", false); canShowFilterTabsView = !ht; filterTabsView.setVisibility(ht ? View.GONE : View.VISIBLE); updateFilterTabsVisibility(false); }
+        // avy_resume_stories
+        if (dialogStoriesCell != null && AvygramSettingsActivity.getPref("hide_stories", false)) { dialogStoriesCellVisible = false; dialogStoriesCell.setVisibility(View.GONE); }
         if (dialogStoriesCell != null) {
             dialogStoriesCell.onResume();
         }
@@ -6977,6 +6992,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
 
     @Override
     public void onPause() {
+
         super.onPause();
         if (storiesBulletin != null) {
             storiesBulletin.hide();
@@ -7507,7 +7523,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
                 searchViewPager.setVisibility(show ? View.VISIBLE : View.GONE);
             }
             if (filterTabsView != null && filterTabsView.getVisibility() == View.VISIBLE) {
-                filterTabsView.setTranslationY(show ? -dp(44) : 0);
+                filterTabsView.setTranslationY(0);
                 filterTabsView.getTabsContainer().setAlpha(show ? 0.0f : 1.0f);
             }
             if (filterTabsView != null) {
@@ -8138,7 +8154,7 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         }
         if (!actionBar.isActionModeShowed() && !AndroidUtilities.isTablet() && !onlySelect && view instanceof DialogCell && !getMessagesController().isForum(((DialogCell) view).getDialogId()) && !rightSlidingDialogContainer.hasFragment()) {
             DialogCell cell = (DialogCell) view;
-            if (cell.isPointInsideAvatar(x, y)) {
+            if (cell.isPointInsideAvatar(x, y) || AvygramStudioSettingsActivity.isEnabled("peek_mode_enabled", true)) {
                 return showChatPreview(cell);
             }
         }
@@ -10323,6 +10339,11 @@ public class DialogsActivity extends BaseFragment implements NotificationCenter.
         if (id == NotificationCenter.dialogsNeedReload) {
             if (viewPages == null || dialogsListFrozen) {
                 return;
+            }
+            for (int vpIdx = 0; vpIdx < viewPages.length; vpIdx++) {
+                if (viewPages[vpIdx] != null && viewPages[vpIdx].dialogsAdapter != null) {
+                    viewPages[vpIdx].dialogsAdapter.notifyDataSetChanged();
+                }
             }
             for (int a = 0; a < viewPages.length; a++) {
                 final ViewPage viewPage = viewPages[a];

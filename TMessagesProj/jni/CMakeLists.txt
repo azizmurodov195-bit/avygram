@@ -1,3 +1,5 @@
+add_link_options(-Wl,--threads=1 -Wl,--no-keep-memory -Wl,--strip-debug)
+add_compile_options(-Wno-c++11-narrowing -Wno-implicit-function-declaration)
 cmake_minimum_required(VERSION 3.6.0)
 
 set(CMAKE_CXX_FLAGS "-std=c++14 -DANDROID -g")
@@ -227,7 +229,7 @@ add_library(rlottie STATIC
         rlottie/src/vector/vdebug.cpp
         rlottie/src/vector/vdrawable.cpp
         rlottie/src/vector/vdrawhelper.cpp
-        rlottie/src/vector/vdrawhelper_neon.cpp
+        
         rlottie/src/vector/velapsedtimer.cpp
         rlottie/src/vector/vimageloader.cpp
         rlottie/src/vector/vinterpolator.cpp
@@ -254,18 +256,18 @@ target_include_directories(rlottie PUBLIC
 
 if (${ANDROID_ABI} STREQUAL "armeabi-v7a")
     target_compile_options(rlottie PUBLIC
-            -fno-integrated-as)
+            -fintegrated-as)
     target_compile_definitions(rlottie PUBLIC
             USE_ARM_NEON)
     target_sources(rlottie PRIVATE
             rlottie/src/vector/pixman/pixman-arm-neon-asm.S)
 elseif(${ANDROID_ABI} STREQUAL "arm64-v8a")
     target_compile_options(rlottie PUBLIC
-            -fno-integrated-as)
+            -fintegrated-as)
     target_compile_definitions(rlottie PUBLIC
             USE_ARM_NEON __ARM64_NEON__)
     target_sources(rlottie PRIVATE
-            rlottie/src/vector/pixman/pixman-arma64-neon-asm.S)
+            )
 endif()
 
 #flac
@@ -785,5 +787,6 @@ target_link_libraries(${NATIVE_LIB}
 #            c)
 #endif()
 
-include(AndroidNdkModules)
-android_ndk_import_module_cpufeatures()
+add_library(cpufeatures STATIC ${ANDROID_NDK}/sources/android/cpufeatures/cpu-features.c)
+target_include_directories(cpufeatures PUBLIC ${ANDROID_NDK}/sources/android/cpufeatures)
+

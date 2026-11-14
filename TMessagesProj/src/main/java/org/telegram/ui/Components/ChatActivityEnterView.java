@@ -2721,7 +2721,18 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                 if (recordingAudioVideo && isInScheduleMode()) {
                                     AlertsCreator.createScheduleDatePickerDialog(parentActivity, parentFragment.getDialogId(), (notify, scheduleDate) -> MediaController.getInstance().stopRecording(1, notify, scheduleDate, false), () -> MediaController.getInstance().stopRecording(0, false, 0, false), resourcesProvider);
                                 }
-                                MediaController.getInstance().stopRecording(isInScheduleMode() ? 3 : 1, true, 0, voiceOnce);
+                                if (org.telegram.ui.AvygramSettingsActivity.getPref("confirm_voice", false) && parentActivity != null) {
+                                    final boolean vOnce = voiceOnce;
+                                    final int sMode = isInScheduleMode() ? 3 : 1;
+                                    new android.app.AlertDialog.Builder(parentActivity)
+                                        .setTitle("Ovozli xabar")
+                                        .setMessage("Ovozli xabar yuborilsinmi?")
+                                        .setPositiveButton("Yuborish", (d, w) -> MediaController.getInstance().stopRecording(sMode, true, 0, vOnce))
+                                        .setNegativeButton("O'chirish", (d, w) -> MediaController.getInstance().stopRecording(0, false, 0, vOnce))
+                                        .show();
+                                } else {
+                                    MediaController.getInstance().stopRecording(isInScheduleMode() ? 3 : 1, true, 0, voiceOnce);
+                                }
                                 delegate.needStartRecordAudio(0);
                             }
                             recordingAudioVideo = false;
@@ -2816,7 +2827,18 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
                                     AlertsCreator.createScheduleDatePickerDialog(parentActivity, parentFragment.getDialogId(), (notify, scheduleDate) -> MediaController.getInstance().stopRecording(1, notify, scheduleDate, false), () -> MediaController.getInstance().stopRecording(0, false, 0, false), resourcesProvider);
                                 }
                                 delegate.needStartRecordAudio(0);
-                                MediaController.getInstance().stopRecording(isInScheduleMode() ? 3 : 1, true, 0, voiceOnce);
+                                if (org.telegram.ui.AvygramSettingsActivity.getPref("confirm_voice", false) && parentActivity != null) {
+                                    final boolean vOnce = voiceOnce;
+                                    final int sMode = isInScheduleMode() ? 3 : 1;
+                                    new android.app.AlertDialog.Builder(parentActivity)
+                                        .setTitle("Ovozli xabar")
+                                        .setMessage("Ovozli xabar yuborilsinmi?")
+                                        .setPositiveButton("Yuborish", (d, w) -> MediaController.getInstance().stopRecording(sMode, true, 0, vOnce))
+                                        .setNegativeButton("O'chirish", (d, w) -> MediaController.getInstance().stopRecording(0, false, 0, vOnce))
+                                        .show();
+                                } else {
+                                    MediaController.getInstance().stopRecording(isInScheduleMode() ? 3 : 1, true, 0, voiceOnce);
+                                }
                             }
                             recordingAudioVideo = false;
                             messageTransitionIsRunning = false;
@@ -6537,6 +6559,17 @@ public class ChatActivityEnterView extends BlurredFrameLayout implements Notific
     }
 
     protected boolean showConfirmAlert(Runnable onConfirmed) {
+        if (org.telegram.ui.AvygramSettingsActivity.getPref("confirm_sticker", false) || org.telegram.ui.AvygramSettingsActivity.getPref("confirm_gif", false)) {
+            if (parentActivity != null && onConfirmed != null) {
+                new android.app.AlertDialog.Builder(parentActivity)
+                    .setTitle("Avygram Tasdiqlash")
+                    .setMessage("Ushbu media (stiker / GIF) yuborilsinmi?")
+                    .setPositiveButton("Yuborish", (d, w) -> onConfirmed.run())
+                    .setNegativeButton("Bekor qilish", null)
+                    .show();
+                return true;
+            }
+        }
         return false;
     }
 

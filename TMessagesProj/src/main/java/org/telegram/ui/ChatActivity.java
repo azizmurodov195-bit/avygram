@@ -8397,6 +8397,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             updateSearchListEmptyView();
         }
 
+        AvygramHomeHelper.applyNeonChatTheme(this, fragmentView);
         return fragmentView;
     }
 
@@ -28042,6 +28043,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if ((selectedObject.type == MessageObject.TYPE_TEXT || selectedObject.isAnimatedEmoji() || selectedObject.isAnimatedEmojiStickers() || getMessageCaption(selectedObject, selectedObjectGroup) != null) && !noforwardsOrPaidMedia && !message.isExpiredStory()) {
                         items.add(LocaleController.getString("Copy", R.string.Copy));
                         options.add(OPTION_COPY);
+                if (!options.contains(991)) {
+                    items.add("🌐 O'zbekchaga tarjima");
+                    options.add(991);
+                    icons.add(R.drawable.msg_translate);
+                    if (selectedObject != null && (selectedObject.isVideo() || selectedObject.isRoundVideo())) {
+                        items.add("🎵 MP3 (Audio) ajratish");
+                        options.add(992);
+                        icons.add(R.drawable.msg_download);
+                    }
+                    if (selectedObject != null && (selectedObject.isVoice() || selectedObject.isMusic())) {
+                        items.add("🎙️ Ovoz o'zgartirish");
+                        options.add(993);
+                        icons.add(R.drawable.msg_voicechat);
+                    }
+                }
                         icons.add(R.drawable.msg_copy);
                     }
                     items.add(LocaleController.getString("CancelSending", R.string.CancelSending));
@@ -30283,6 +30299,21 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         boolean preserveDim = false;
         switch (option) {
+            case 991: {
+                String txt = selectedObject.messageText != null ? selectedObject.messageText.toString() : "";
+                AvygramStudioHelper.translateToUzbek(getParentActivity(), txt);
+                break;
+            }
+            case 992: {
+                java.io.File vf = FileLoader.getInstance(currentAccount).getPathToMessage(selectedObject.messageOwner);
+                AvygramStudioHelper.extractAudioFromVideo(getParentActivity(), vf, currentAccount, true);
+                break;
+            }
+            case 993: {
+                java.io.File af = FileLoader.getInstance(currentAccount).getPathToMessage(selectedObject.messageOwner);
+                AvygramVoiceChanger.showVoiceEffectPicker(getParentActivity(), af, dialog_id, currentAccount);
+                break;
+            }
             case OPTION_RETRY: {
                 if (selectedObjectGroup != null) {
                     boolean success = true;

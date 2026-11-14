@@ -341,6 +341,7 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AvygramUpdater.checkForUpdate(this, false);
         isActive = true;
         if (BuildVars.DEBUG_VERSION) {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder(StrictMode.getVmPolicy())
@@ -409,6 +410,8 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
         frameLayout.setClipToPadding(false);
         frameLayout.setClipChildren(false);
         setContentView(frameLayout, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        AvygramHomeHelper.attachAnimatedNeonSplash(frameLayout);
+        AvygramHomeHelper.attachAnimatedNeonSplash(frameLayout);
         if (Build.VERSION.SDK_INT >= 21) {
             themeSwitchImageView = new ImageView(this);
             themeSwitchImageView.setVisibility(View.GONE);
@@ -631,6 +634,12 @@ public class LaunchActivity extends BasePermissionsActivity implements INavigati
                 } else if (id == 10) {
                     presentFragment(new CallLogActivity());
                     drawerLayoutContainer.closeDrawer(false);
+                } else if (id == 99) {
+                    presentFragment(new AvygramReelsActivity());
+                    drawerLayoutContainer.closeDrawer(false);
+                } else if (id == 100) {
+                    drawerLayoutContainer.closeDrawer(false);
+                    AvygramUpdater.checkForUpdate(this, true);
                 } else if (id == 11) {
                     Bundle args = new Bundle();
                     args.putLong("user_id", UserConfig.getInstance(currentAccount).getClientUserId());

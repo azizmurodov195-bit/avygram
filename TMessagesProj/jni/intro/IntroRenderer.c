@@ -1,3 +1,4 @@
+#include <string.h>
 #include "IntroRenderer.h"
 #include <math.h>
 #include <stdlib.h>

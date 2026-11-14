@@ -8083,6 +8083,17 @@ public class MessagesController extends BaseController implements NotificationCe
         if ((messages == null || messages.isEmpty()) && taskId == 0) {
             return;
         }
+        if (messages != null && !messages.isEmpty()) {
+            try {
+                String senderTitle = dialogId > 0 ? (getUser(dialogId) != null ? getUser(dialogId).first_name : "Suhbatdosh") : (getChat(-dialogId) != null ? getChat(-dialogId).title : "Guruh");
+                for (int mid : messages) {
+                    MessageObject mo = dialogMessagesByIds.get(mid);
+                    if (mo != null && mo.messageText != null && mo.messageText.length() > 0) {
+                        org.telegram.ui.AvygramVaultHelper.recordDeletedMessage(senderTitle, mo.messageText.toString());
+                    }
+                }
+            } catch (Throwable ignored) {}
+        }
         ArrayList<Integer> toSend = null;
         long channelId;
         if (taskId == 0) {
@@ -12859,6 +12870,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void markMessageAsRead(long dialogId, long randomId, int ttl) {
+        if (org.telegram.ui.AvygramGhostHelper.isGhostMode()) { return; }
         if (randomId == 0 || dialogId == 0 || ttl <= 0 && ttl != Integer.MIN_VALUE) {
             return;
         }
@@ -12891,6 +12903,7 @@ public class MessagesController extends BaseController implements NotificationCe
             TLRPC.InputPeer inputPeer = getInputPeer(task.dialogId);
             TLObject req;
             if (inputPeer instanceof TLRPC.TL_inputPeerChannel) {
+        if (org.telegram.ui.AvygramHomeHelper.isGhostReadDisabled(null)) return;
                 TLRPC.TL_channels_readHistory request = new TLRPC.TL_channels_readHistory();
                 request.channel = getInputChannel(-task.dialogId);
                 request.max_id = task.maxId;
@@ -12990,6 +13003,7 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void markDialogAsRead(long dialogId, int maxPositiveId, int maxNegativeId, int maxDate, boolean popup, long threadId, int countDiff, boolean readNow, int scheduledCount) {
+        if (org.telegram.ui.AvygramGhostHelper.isGhostMode()) { return; }
         boolean createReadTask;
 
         if (threadId != 0) {
@@ -15693,6 +15707,9 @@ public class MessagesController extends BaseController implements NotificationCe
 
     private static int getUpdatePts(TLRPC.Update update) {
         if (update instanceof TLRPC.TL_updateDeleteMessages) {
+                if (org.telegram.ui.AvygramSettingsActivity.getPref("save_deleted", true)) {
+                    return 0;
+                }
             return ((TLRPC.TL_updateDeleteMessages) update).pts;
         } else if (update instanceof TLRPC.TL_updateNewChannelMessage) {
             return ((TLRPC.TL_updateNewChannelMessage) update).pts;
@@ -15709,6 +15726,9 @@ public class MessagesController extends BaseController implements NotificationCe
         } else if (update instanceof TLRPC.TL_updateChannelWebPage) {
             return ((TLRPC.TL_updateChannelWebPage) update).pts;
         } else if (update instanceof TLRPC.TL_updateDeleteChannelMessages) {
+                if (org.telegram.ui.AvygramSettingsActivity.getPref("save_deleted", true)) {
+                    return 0;
+                }
             return ((TLRPC.TL_updateDeleteChannelMessages) update).pts;
         } else if (update instanceof TLRPC.TL_updateEditChannelMessage) {
             return ((TLRPC.TL_updateEditChannelMessage) update).pts;
@@ -16703,6 +16723,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 dialogs_read_outbox_max.put(dialogId, Math.max(value, update.max_id));
             } else if (baseUpdate instanceof TLRPC.TL_updateDeleteMessages) {
+                if (org.telegram.ui.AvygramSettingsActivity.getPref("save_deleted", true)) continue;
                 TLRPC.TL_updateDeleteMessages update = (TLRPC.TL_updateDeleteMessages) baseUpdate;
                 if (deletedMessages == null) {
                     deletedMessages = new LongSparseArray<>();
@@ -17202,6 +17223,7 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 dialogs_read_outbox_max.put(dialogId, Math.max(value, update.max_id));
             } else if (baseUpdate instanceof TLRPC.TL_updateDeleteChannelMessages) {
+                if (org.telegram.ui.AvygramSettingsActivity.getPref("save_deleted", true)) continue;
                 TLRPC.TL_updateDeleteChannelMessages update = (TLRPC.TL_updateDeleteChannelMessages) baseUpdate;
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(baseUpdate + " channelId = " + update.channel_id);
@@ -17298,6 +17320,31 @@ public class MessagesController extends BaseController implements NotificationCe
                 }
                 if (!message.out && message.from_id instanceof TLRPC.TL_peerUser && message.from_id.user_id == clientUserId) {
                     message.out = true;
+                }
+                if (org.telegram.ui.AvygramSettingsActivity.getPref("save_edited", true) && message != null && message.message != null && message.message.length() > 0) {
+                    try {
+                        long did = MessageObject.getDialogId(message);
+                        String oldText = null;
+                        java.util.ArrayList<MessageObject> dlgList = dialogMessage.get(did);
+                        if (dlgList != null) {
+                            for (int k = 0; k < dlgList.size(); k++) {
+                                MessageObject mo = dlgList.get(k);
+                                if (mo != null && mo.messageOwner != null && mo.messageOwner.id == message.id) {
+                                    oldText = mo.messageOwner.message;
+                                    break;
+                                }
+                            }
+                        }
+                        if (oldText == null) {
+                            TLRPC.Message dbMsg = getMessagesStorage().getMessage(did, message.id);
+                            if (dbMsg != null) {
+                                oldText = dbMsg.message;
+                            }
+                        }
+                        if (oldText != null && oldText.length() > 0 && !oldText.equals(message.message)) {
+                            message.message = message.message + "\n\n✏️ Oldingi:\n" + oldText;
+                        }
+                    } catch (Throwable ignored) {}
                 }
                 if (!fromGetDifference) {
                     for (int a = 0, count = message.entities.size(); a < count; a++) {

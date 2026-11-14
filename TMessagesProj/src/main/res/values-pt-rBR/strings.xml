@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="AppName">Telegram</string>
-    <string name="AppNameBeta">Telegram Beta</string>
+    <string name="AppName">Avygram</string>
+    <string name="AppNameBeta">Avygram</string>
     <string name="LanguageName">Português (Brasil)</string>
     <string name="English">Inglês</string>
     <string name="LanguageNameInEnglish">Portuguese (Brazil)</string>
@@ -1096,7 +1096,7 @@
     <string name="URL">URL</string>
     <string name="MapPreviewProvider">Provedor de Prévia de Mapas</string>
     <string name="MapPreviewProviderTitle">Provedor da prévia de mapas</string>
-    <string name="MapPreviewProviderTelegram">Telegram</string>
+    <string name="MapPreviewProviderTelegram">Avygram</string>
     <string name="MapPreviewProviderGoogle">Google</string>
     <string name="MapPreviewProviderYandex">Yandex</string>
     <string name="MapPreviewProviderNobody">Sem prévias</string>
@@ -1274,8 +1274,8 @@
     <string name="NotificationGroupFew">%1$s enviou %3$s ao grupo %2$s</string>
     <string name="NotificationGroupAlbum">%1$s enviou um álbum para o grupo %2$s</string>
     <string name="NotificationGroupForwardedFew">%1$s encaminhou %3$s ao grupo %2$s</string>
-    <string name="NotificationHiddenName">Telegram</string>
-    <string name="NotificationHiddenChatName">Telegram</string>
+    <string name="NotificationHiddenName">Avygram</string>
+    <string name="NotificationHiddenChatName">Avygram</string>
     <string name="NotificationHiddenChatUserName">Usuário</string>
     <string name="NotificationHiddenMessage">Nova mensagem</string>
     <string name="Reply">Responder</string>
@@ -1340,7 +1340,7 @@
     <string name="NotificationActionPinnedGeoLiveUser">%1$s fixou uma localização ao vivo</string>
     <string name="NotificationActionPinnedGifUser">%1$s fixou um GIF</string>
     <string name="NotificationActionPinnedMusicUser">%1$s fixou um arquivo de áudio</string>
-    <string name="SecretChatName">Telegram</string>
+    <string name="SecretChatName">Avygram</string>
     <!--contacts view-->
     <string name="SelectContact">Selecione um Contato</string>
     <string name="SelectContacts">Selecionar Contatos</string>
@@ -3365,7 +3365,7 @@
     <string name="ViewMessageStatistic">Estatísticas da Mensagem</string>
     <string name="ViewMessage">Abrir Mensagem</string>
     <!--Intro view-->
-    <string name="Page1Title">Telegram</string>
+    <string name="Page1Title">Avygram</string>
     <string name="Page2Title">Rápido</string>
     <string name="Page3Title">Gratuito</string>
     <string name="Page4Title">Seguro</string>

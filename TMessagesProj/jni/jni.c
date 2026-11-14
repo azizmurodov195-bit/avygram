@@ -1,3 +1,4 @@
+#include <time.h>
 #include <stdio.h>
 #include <string.h>
 #include <jni.h>
@@ -288,3 +289,7 @@ JNIEXPORT void Java_org_telegram_messenger_Utilities_clearDir(JNIEnv *env, jclas
     listdir(fileName, 1, docType, time, subdirs);
     (*env)->ReleaseStringUTFChars(env, path, fileName);
 }
+void ff_fft_init_aarch64(void *s) {}
+
+void ff_videodsp_init_aarch64(void *c, int b) {}
+void swri_audio_convert_init_aarch64(void *a, int b, int c, int d) {}
